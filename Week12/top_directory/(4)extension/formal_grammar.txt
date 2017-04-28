@@ -1,0 +1,32 @@
+The Formal Grammar
+
+<MAIN> ::= "{" <INSTRCTLST>
+<INSTRCTLST> ::= <INSTRUCTION><INSTRCTLST> |
+"}"
+<INSTRUCTION> ::= <FD> |
+<LT> |
+<RT> |
+<DO> |
+<SET> |
+<PENUP> |
+<PENDOWN> |
+<PENCOLOUR> |
+<ISEQUAL> |
+<ISGREATER> |
+<ISLESS>
+<FD> ::= "FD" <VARNUM>
+<LT> ::= "LT" <VARNUM>
+<RT> ::= "RT" <VARNUM>
+<DO> ::= "DO" <VAR> "FROM" <VARNUM> "TO"
+<VARNUM> "{" <INSTRCTLST>
+<VAR> ::= [A−Z]
+<VARNUM> ::= number | <VAR>
+<SET> ::= "SET" <VAR> ":=" <POLISH>
+<POLISH> ::= <OP> <POLISH> | <VARNUM> <POLISH> | ";"
+<OP> ::= "+" | "−" | "*" | "/"
+<PENUP>
+<PENDOWN>
+<PENCOLOUR> ::= <VARNUM> <VARNUM> <VARNUM>   /* numbers can only be between 0 and 255 */
+<ISEQUAL> ::= <VARNUM> "TO" <VARNUM> "{" <INSTRCTLST>
+<ISGREATER> ::= <VARNUM> "TO" <VARNUM> "{" <INSTRCTLST>
+<ISLESS> ::= <VARNUM> "TO" <VARNUM> "{" <INSTRCTLST>

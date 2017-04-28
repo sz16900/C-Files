@@ -1,0 +1,40 @@
+/* http://www.geeksforgeeks.org/
+write-a-c-program-to-print-all-permutations-of-a-giv
+*/
+
+#include <stdio.h>
+#include <string.h>
+
+void permute(char *a, int l, int r);
+void swap(char *x, char *y);
+
+int main(){
+
+    char str[] = "123";
+    int n = strlen(str);
+    permute(str, 0, n-1);
+    return 0;
+}
+
+void permute(char *a, int l, int r){
+
+   int i;
+   if (l == r){
+     printf("%s\n", a);
+   }
+   else{
+       for (i = l; i <= r; i++){
+          swap((a+l), (a+i));
+          permute(a, l+1, r);
+          swap((a+l), (a+i)); /*backtrack*/
+
+       }
+   }
+}
+
+void swap(char *x, char *y){
+    char temp;
+    temp = *x;
+    *x = *y;
+    *y = temp;
+}

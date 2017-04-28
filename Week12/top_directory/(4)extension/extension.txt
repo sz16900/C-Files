@@ -1,0 +1,55 @@
+** I've deliberatly left commented functions in the code to demonstrate that
+I have actually tried to implement some extra features. I could not get some of them 
+workiing, however. **
+
+For my extension, I've chosen to proceed with a more "traditional" route and
+decided to try to extend the Formal Grammar as much as I possibly could.
+My first attempt at extending the Formal Grammar started with the conditional
+statements ISEQUAL, ISLESS, ISGREATER. These three statements check whether a
+VARNUM meets the condition of the proceeding VARNUM and jumps straight into the
+code unless they do not.
+
+Next I tried (really hard) to create a Formal Grammar that would take into
+account the creation and execution of functions. I started with statements FUNC,
+STARTFUNC. To my surprise, I was able to create a function that could take a
+single value and call itself until it met its base case. I was very happy to see
+this work, specially when I say that it printed a square on the SLD Window. But
+when I tried to deploy a FUNC that could take 2 values and that it could also
+handle loops within it, I was at lost as I saw the stack build up to the point
+where I lost control. I wanted to create a fractal tree, as I thought that the
+beauty of the Logo language is in the way it can handle functions and recursions
+calls. Instead, I was unsuccessful at creating a proper stack to keep record
+of when the functions had left and returned. As a result, I am left with a deep
+feeling of dissatisfaction and with the will to, hopefully, create a proper
+Logos Turtle Language that could handle Function calls in the near future.
+
+Next, to keep things very traditional, I implemented the statements PENUP,
+PENDOWN. There is not much to say about these two statements. On PENUP, the pen
+is "lifted" and it can be moved about to where the user would like to set it back
+down with PENDOWN.
+
+Finally I decided to make it a bit more fun and added the statement PENCOLOUR. This
+statement simply changes the the color of the pen based on RGB numbers. If the user
+chooses to set a number higher than 255 or lower than 0, the program quits and
+sends an error.
+
+....................................................................................
+
+This extension also tried to make the Turtle Graphics Logo language application
+fun by setting up a sprite that would move (and potentially turn) as the
+interpreter moved along the file. Sadly, I was not able to deploy a sprite that
+could do that, but instead a dozens upon dozens of sprites that would not go
+away as the SDL window was refreshed. I realized that the solution to this
+problem was to continually clear the renderer with SDL\_RenderClear(). The
+problem of using this function is that it clears the renderer from which the
+turtle is drawing the lines, therefore erasing any progress.
+
+I've commented out what I've tried to do in hope to demonstrate what I tried
+to achieve. 
+
+....................................................................................
+
+If you haven't yet installed DSL_image, please proceed with the foloowing command:
+
+sudo apt-get install libsdl2-2.0-0 libsdl2-dbg libsdl2-dev libsdl2-image-2.0-0 
+libsdl2-image-dbg libsdl2-image-dev

@@ -1,0 +1,144 @@
+UNIT TESTING
+
+I've always followed a rigorous "code a little, test some more" approach to the
+way in which I start any project. For this Turtle Project, this has been no
+exception. If Unit Testing is the way in which we get a recently created function
+and run it through some tests, then by ALL means I have done that. However,
+when I thought about using some kind of framework (such as C Unit or Check, etc.),
+I was a bit at loss, as I was not able to understand or implement any of these.
+I can only give some examples of the way in which I approach my version of Unit
+Testing.
+
+When I create a function, say, for example:
+
+void Main(Program *p, SDL_Simplewin *sw, Coor *coor){
+if(!strsame(p->wds[p->cw], "{")){
+  ERROR("No { statement ?");
+}
+p->cw = p->cw + 1;
+Instrclst(p, sw, coor);
+}
+
+I make sure it passes a couple of tests I set aside for it to do. I, for example,
+run it through a couple of loops to make sure that it will only thow an error if
+it doesn't take in "{". To make sure that it can go ahead and call the next
+function, I need to make sure that it is also updating p->cw by inserting 
+print statements before and after that line of code has been called. Thanks to that, I
+found out that i was getting random numbers in p->cw due to the fact that I was not
+initializing the structure from the start.
+
+I found a lot of bugs in the Varnum function. When I ran the test, the function
+was passing strings such as "2s2, .a22, 22a, .0a3". Thats because I had deliberately
+set the isVar() and isNum() to check the first character of that insting only, and if it
+was a valid number or variable, then it would be OK. I had to make sure that for the
+isVar function, it could only take one character from a string, and that it was an
+uppercase letter. To pass a correct number was a lot more complicated as I needed to take
+into account variables such as: 0.6, -0.2, -45, .033 and so on. To do that, I did
+a bit of a trick and made sure that for any number given, I would set a loop that
+checks whether the '-' and '.' character only appeared once and that everything
+inside the string was a number and nothing else.
+
+...
+if( strlen(p->wds[p->cw]) == 1 && isalpha(p->wds[p->cw])
+    && isupper(p->wds[p->cw]) ){
+      return 1;
+    }
+
+INPUT: S4
+OUTPUT: 1
+EXPECTED: ERROR();
+
+Testing for the Polish() turned out to be very rewarding as I found crucial bugs
+that were giving strange results. One of the bugs that took a while to find (mainly
+because the way in which I had set up the test for that) was that I kept having
+stuff left over in the stack. A good example is 1 2 3 + ; . Under the the parser
+it does pass as it conforms to the grammar, but in the interpreter it should catch
+that as it has not succesfully popped out all of the elements from the stack.
+The stack should always be left empty so that it can be reused whenever SET is
+called.
+
+...
+
+  if( !(isVar(p)) ){
+    ERROR("Not a variable");
+  }
+  p->cw = p->cw + 1;
+  if(!(strsame(p->wds[p->cw], ":="))){
+    ERROR("No :=");
+  }
+  p->cw = p->cw + 1;
+  Polish(p, &s);
+  /* This should be the last element in the stack, and clear it */
+  p->temp = Pop(&s);
+  printf("%d", s.top);
+  Var(p, tempVar);
+
+}
+
+INPUT: SET A := 1 2 3 + ;
+OUTPUT: 1
+EXPECTED: 0
+
+One of the bugs that I would have never caught had I not been Unit Testing was
+inside the DO() function. I had to run it through several tests inside a big
+while loop to find out that DO() was loopiing one step too many. That is because
+I had left the <= instead of just < . That, to be honest, was a collaboration
+between white-box testing and Unit testing. A common OUTPUT would always be one
+extra while I was expecting something different.
+
+While running a tests on the Polish function, I encountered a situation where
+by dividing by zero (i.e. 1/0) would result in undefined behaviour. Since I am
+dealing with doubles in my code, it is near to impossible to do something like:
+if(i == INFINITY){...} because it is dangerous to comparing floating points. The
+compiler does not allow for functions such as isfinite(), isnan()... Therefore,
+the only way I could possibly tackle this oddity was to include it in the manual,
+and alert the user that anything divided by zero is undefined behaviour. The
+OUTPUT of divisions by zero where (inf, -inf):
+
+...
+if(strsame(p->wds[p->cw], "/")){
+  c = a / b;
+  printf("%f", c)
+  return c;
+}
+INPUT: a = 1.0; b = 0.0
+OUPUT: inf
+INPUT: a = 1.0; b = -0.0
+OUPUT: -inf
+
+..................................................................................
+
+WHITE BOX AND BLACK BOX TESTING
+
+When running my program through some tests, I realized that if I SET A := 100 100,
+it would still print out the value. Thats because the way I had it was that I
+would pop the top element and store it. Instead what I do now is I make sure
+the stack is properly empty before I pass any elements. This bug was still being
+carried from the previous example as I was setting the value before even checking
+the stack was empty; or rather, I kept forgetting to update every pop.
+
+I found out that when I called a variable not was not set, it still executed.
+That was because all the variables were originally set to zero. To avoid that,
+I put a flag instead and printed all the variables to make sure they had flags
+on.
+
+One trivial bug was the fact that loops can be ascending or descending. One of my
+family members asked me if the loop was FROM 1 TO 5 would be the same FROM 5 TO
+1. That was a good question as i thought that it still meets the requeired steps
+to go from one variable to the other. And so, they way I fixed that was to have
+condition that checks whether a loop is ascending or descending and then execute.
+
+Originally, negative numbers were not taken into consideration. But, obviously,
+negative numbers are still numbers and so they had to be used. Hence, one of the
+big questions that kept comming up was a FD -100. It had to then move to the
+opposite direction as that was the only posible way I could see that.
+
+..................................................................................
+
+VALGRIND
+
+I used valgrind to test if I had memory leaks in my code. For the Parser, I found
+0 errrors for memory leaks. However, in the interpreter part, valgrind showed
+4 errors. All of the 4 errors corresponded to closeWinUserInput(&sw). I spoke
+with some of my classmates and they said it had something to do with the way in
+which SDL works.

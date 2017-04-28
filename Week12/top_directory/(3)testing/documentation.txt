@@ -1,0 +1,43 @@
+This is a Parser for an attempt to imitate the Turtle Graphics language "Logo".
+There are some things that we need to take into consideration:
+
+THE FORMAL GRAMMAR:
+
+<MAIN> ::= "{" <INSTRCTLST>
+<INSTRCTLST> ::= <INSTRUCTION><INSTRCTLST> |
+"}"
+<INSTRUCTION> ::= <FD> |
+<LT> |
+<RT> |
+<DO> |
+<SET>
+<FD> ::= "FD" <VARNUM>
+<LT> ::= "LT" <VARNUM>
+<RT> ::= "RT" <VARNUM>
+<DO> ::= "DO" <VAR> "FROM" <VARNUM> "TO"
+<VARNUM> "{" <INSTRCTLST>
+<VAR> ::= [A−Z]
+<VARNUM> ::= number | <VAR>
+<SET> ::= "SET" <VAR> ":=" <POLISH>
+<POLISH> ::= <OP> <POLISH> | <VARNUM> <POLISH> | ";"
+<OP> ::= "+" | "−" | "*" | "/"
+
+- Variables can only be one letter long and capitalized.
+- Mathematical expressions can only be expressed in Reversed Polish.
+- For every openning bracket, there should be a closing one.
+- Do loops can be ascending or descending..
+- All of the tokens are separated by space
+- Dividing by zero (i.e. 1/0) will result in som undefined behaviour. It is best
+  to avoid.
+
+
+SOME TECHNICAL INFORMATION:
+
+- Because I always intended this to a be an exercise on how to Parse and
+Interpret; I always thought of keeping the file which contains the Formal
+Grammar quite short. Because of that, I decided to limit the ammount of Tokens
+that my program takes in. The limit is 2000 Tokens. A fair ammount of be able to
+see how fun Turtle Graphics is. I believe that by having the possibility of
+allowing an infinite ammount of Tokens would take away the simplicity of the
+program. I also believe that is not necessary to have a lot of Tokens to render
+graphics on such a small SDL window.
